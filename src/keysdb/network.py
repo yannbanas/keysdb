@@ -48,15 +48,15 @@ class NetworkedKeyValueStore:
                  _______                  
                /@@@@@@@@@\                
              /@@@@@   @@@@@\            
-            /@@@@@     @@@@@\           
-            @@@@@@@@@@@@@@@@@   {VERSION}        
-            @@@@@@@@@@@@@@@@@   Running in mode {TYPE}        
-             @@@@@@@@@@@@@@@    Port: {PORT}        
-                @@@@@@@@@       Info: {URL}        
-                @@@@@@@@@       Author: {AUTHOR}        
-                  @@@@@@@               
-                @@@@@@@@@               
-                  @@@@@@@              
+            /@@@@@     @@@@@\ 
+            @@@@@@@@@@@@@@@@@
+            @@@@@@@@@@@@@@@@@          ╔════════════════════════════════════════════╗
+             @@@@@@@@@@@@@@@           ║ {VERSION}           ║
+                @@@@@@@@@              ║ Running in mode {TYPE}                 ║
+                @@@@@@@@@              ║ Port: {PORT}                                 ║
+                  @@@@@@@              ║ Info: {URL}  ║
+                @@@@@@@@@              ║ Author: {AUTHOR}                         ║
+                  @@@@@@@              ╚════════════════════════════════════════════╝
                  @@@@@@@@               
                   @@@@@@@
                  @@@@@@@@              
@@ -82,7 +82,7 @@ class NetworkedKeyValueStore:
                 if command == "SET":
                     if len(args) != 4:
                         client_socket.sendall(b"Invalid SET command format")
-                        logging.error(f"Invalid SET command format: {data}")
+                        logging.info(f"Invalid SET command format: {data}")
                         continue
 
                     key, value, data_type, ttl = args[0], args[1], args[2], int(args[3])
@@ -93,7 +93,7 @@ class NetworkedKeyValueStore:
                 elif command == "HSET":
                     if len(args) != 4:
                         client_socket.sendall(b"Invalid HSET command format")
-                        logging.error(f"Invalid HSET command format: {data}")
+                        logging.info(f"Invalid HSET command format: {data}")
                         continue
 
                     key, field, value, ttl = args[0], args[1], args[2], int(args[3])
@@ -104,7 +104,7 @@ class NetworkedKeyValueStore:
                 elif command == "HGET":
                     if len(args) != 2:
                         client_socket.sendall(b"Invalid HGET command format")
-                        logging.error(f"Invalid HGET command format: {data}")
+                        logging.info(f"Invalid HGET command format: {data}")
                         continue
 
                     key, field = args[0], args[1]
@@ -159,12 +159,17 @@ class NetworkedKeyValueStore:
                         client_socket.sendall(str(e).encode())
                         logging.error(f"LEN: Error sending length: {e}")
 
+                elif command.lower() == "quit":
+                    logging.info(f"Client {client_socket} was disconnected from server.")
+                    break
                 else:
                     client_socket.sendall(b"Invalid command")
-                    logging.error(f"Invalid command: {data}")
+                    logging.info(f"Invalid command: {data}")
 
         except Exception as e:
             logging.error(f"Error handling client: {e}")
+            client_socket.close()
+        finally:
             client_socket.close()
 
 
