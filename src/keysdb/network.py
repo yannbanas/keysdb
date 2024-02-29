@@ -36,6 +36,13 @@ AUTHOR="Banas Yann"
 
 PASSWD = secrets.token_urlsafe(8)
 
+from keysdb.aes import AES
+from keysdb.yaml_editor import load_yaml, write_yaml
+
+yamlpath = 'D:\\Experimentation\\keysdb\\src\\keysdb\\keys.yaml'
+KEY = bytes.fromhex(load_yaml(yamlpath)['key'])
+IV = bytes.fromhex(load_yaml(yamlpath)['iv'])
+
 class NetworkedKeyValueStore:
     def __init__(self, host, port, data_file,hashed_password=PASSWD):
         self.host = host
@@ -98,16 +105,20 @@ class NetworkedKeyValueStore:
                 return
             else:
                 while True:
-                    data = client_socket.recv(1024).decode().strip()
-                    if not data:
+
+                    encrypted_data = client_socket.recv(1024)  # Receive encrypted data from client
+                    decrypted_data = AES(KEY).decrypt_ctr(encrypted_data, IV)  # Decrypt the received data
+                    decoded_data = decrypted_data.decode()  # Decode decrypted data
+                    
+                    if not decrypted_data:
                         break
 
-                    command, *args = data.split(" ")
+                    command, *args = decoded_data.split(" ")
 
                     if command == "SET":
                         if len(args) != 4:
                             client_socket.sendall(b"Invalid SET command format")
-                            logging.info(f"Invalid SET command format: {data}")
+                            logging.info(f"Invalid SET command format: {decoded_data}")
                             continue
 
                         key, value, data_type, ttl = args[0], args[1], args[2], int(args[3])
@@ -118,7 +129,7 @@ class NetworkedKeyValueStore:
                     elif command == "HSET":
                         if len(args) != 4:
                             client_socket.sendall(b"Invalid HSET command format")
-                            logging.info(f"Invalid HSET command format: {data}")
+                            logging.info(f"Invalid HSET command format: {decoded_data}")
                             continue
 
                         key, field, value, ttl = args[0], args[1], args[2], int(args[3])
@@ -129,7 +140,7 @@ class NetworkedKeyValueStore:
                     elif command == "HGET":
                         if len(args) != 2:
                             client_socket.sendall(b"Invalid HGET command format")
-                            logging.info(f"Invalid HGET command format: {data}")
+                            logging.info(f"Invalid HGET command format: {decoded_data}")
                             continue
 
                         key, field = args[0], args[1]
@@ -189,7 +200,7 @@ class NetworkedKeyValueStore:
                         break
                     else:
                         client_socket.sendall(b"Invalid command")
-                        logging.info(f"Invalid command: {data}")
+                        logging.info(f"Invalid command: {decoded_data}")
 
         except Exception as e:
             logging.error(f"Error handling client: {e}")

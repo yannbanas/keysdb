@@ -1,4 +1,13 @@
 import socket, hashlib
+from keysdb.aes import AES
+from keysdb.yaml_editor import load_yaml, write_yaml
+
+yamlpath = './keys.yaml'
+KEY = bytes.fromhex(load_yaml(yamlpath)['key'])
+IV = bytes.fromhex(load_yaml(yamlpath)['iv'])
+
+print(KEY)
+print(IV)
 
 def send_password(sock, password):
     hashed_password = hashlib.sha256(password.encode()).hexdigest()  # Hasher le mot de passe
@@ -20,11 +29,11 @@ def main():
         while True:
             command = input("keysdb>>> ").strip()
 
-            if command.lower() == "quit":
-                s.sendall(command.encode())
-                break
+            # Encrypt the command using AES
+            encrypted_command = AES(KEY).encrypt_ctr(command.encode(), IV)
 
-            s.sendall(command.encode())
+            # Send encrypted command to the server
+            s.sendall(encrypted_command)
 
             if command.startswith("SET"):
                 response = s.recv(1024).decode()
@@ -56,6 +65,11 @@ def main():
             elif command.startswith("LEN"):
                 response = int.from_bytes(s.recv(4), byteorder="big")
                 print("Number of key-value pairs in the store:", response)
+
+            elif command.lower() == "quit":
+                s.sendall(command.encode())
+                break
+
             else:
                 response = s.recv(1024).decode()
                 print(response)
