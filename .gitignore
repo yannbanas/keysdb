@@ -1,2 +1,3 @@
 **/src/*.jon
 src/keysdb/__pycache__/
+src/keysdb/keysdb.egg-info/

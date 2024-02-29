@@ -1,4 +1,8 @@
-import socket
+import socket, hashlib
+
+def send_password(sock, password):
+    hashed_password = hashlib.sha256(password.encode()).hexdigest()  # Hasher le mot de passe
+    sock.sendall(hashed_password.encode())
 
 def main():
     host = 'localhost'
@@ -10,6 +14,9 @@ def main():
         print("Connected to the server.")
         print("Available commands: SET, GET, DELETE, CONTAINS, ITER, HSET, HGET, LEN")
         print("Type quit to exit.")
+        password = input("Enter password of db: ")
+        send_password(s, password)
+        print(s.recv(1024).decode())
         while True:
             command = input("keysdb>>> ").strip()
 

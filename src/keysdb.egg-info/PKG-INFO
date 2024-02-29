@@ -1,0 +1,106 @@
+Metadata-Version: 2.1
+Name: keysdb
+Version: 0.0.1
+Summary: A simple in-memory key-value store with data persistence and multiple data types support.
+Home-page: https://github.com/yannbanas/keysdb
+Author: Banas Yann
+Author-email: yannbanas@gmail.com
+License: UNKNOWN
+Description: # KeysDB
+        
+        KeysDB est une application de stockage clÃ©-valeur qui fournit une interface simple pour stocker, rÃ©cupÃ©rer et supprimer des donnÃ©es en utilisant des commandes TCP. Cette application est conÃ§ue pour Ãªtre conviviale et peut Ãªtre utilisÃ©e dans divers scÃ©narios, notamment le stockage de configurations, la gestion de sessions utilisateur, et bien plus encore.
+        
+        ## Installation
+        
+        1. Clonez le dÃ©pÃ´t :
+        
+        ```
+        git clone https://github.com/votre-nom-utilisateur/keysdb.git
+        cd keysdb
+        ```
+        
+        2. Build package from source :
+        
+        ```
+        python setup.py bdist_wheel
+        ```
+        
+        ## Utilisation
+        
+        ### DÃ©marrage du serveur
+        
+        Pour dÃ©marrer le serveur KeysDB, exÃ©cutez la commande suivante :
+        
+        ```
+        python examples/server.py
+        ```
+        
+        ### ExÃ©cution de commandes depuis le client
+        
+        Pour interagir avec le serveur KeysDB, vous pouvez utiliser le client inclus. Voici comment exÃ©cuter diffÃ©rentes commandes :
+        
+        1. **SET**: DÃ©finir une nouvelle paire clÃ©-valeur dans le magasin de clÃ©s.
+        
+        ```
+        SET mykey Hello string 60
+        ```
+        
+        les types valide sont: ***['string', 'integer', 'list', 'hash']***
+        
+        2. **GET**: RÃ©cupÃ©rer la valeur associÃ©e Ã  une clÃ© spÃ©cifique dans le magasin de clÃ©s.
+        
+        ```
+        GET mykey
+        ```
+        
+        3. **DELETE**: Supprimer une clÃ© spÃ©cifique et sa valeur associÃ©e du magasin de clÃ©s.
+        
+        ```
+        DELETE mykey
+        ```
+        
+        4. **CONTAINS**: VÃ©rifier si une clÃ© spÃ©cifique existe dans le magasin de clÃ©s.
+        
+        ```
+        CONTAINS mykey
+        ```
+        
+        5. **ITER**: Afficher toutes les clÃ©s prÃ©sentes dans le magasin de clÃ©s.
+        
+        ```
+        ITER
+        ```
+        
+        6. **HSET**: DÃ©finir une nouvelle paire clÃ©-valeur dans un hachage spÃ©cifique dans le magasin de clÃ©s.
+        
+        ```
+        HSET myhash field1 value1 60
+        ```
+        
+        7. **HGET**: RÃ©cupÃ©rer la valeur associÃ©e Ã  un champ spÃ©cifique dans un hachage spÃ©cifique dans le magasin de clÃ©s.
+        
+        ```
+        HGET myhash field1
+        ```
+        
+        8. **LEN**: RÃ©cupÃ©rer le nombre total de paires clÃ©-valeur dans le magasin de clÃ©s.
+        
+        ```
+        LEN
+        ```
+        
+        9. **QUIT**: DÃ©connecter proprement le client du serveur.
+        
+        ```
+        QUIT
+        ```
+        
+        ## Licence
+        
+        Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de dÃ©tails.
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown

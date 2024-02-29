@@ -1,0 +1,6 @@
+host: localhost
+port: 4224
+data_path: D:\
+data_file: data.json
+key: b7f514a608ac4b42f3cbb8f0b994c01e
+iv: 878a375b226fac295a2aa7fd1e26bdf9

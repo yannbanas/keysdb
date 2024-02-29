@@ -26,6 +26,8 @@ class KeyValueStore:
             logger.error(f"Error loading data from file: {e}")
             self.data = collections.OrderedDict()
 
+    
+        
     def _save_data(self):
         try:
             with open(self.data_file, 'w') as f:

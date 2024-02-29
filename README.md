@@ -24,7 +24,7 @@ python setup.py bdist_wheel
 Pour démarrer le serveur KeysDB, exécutez la commande suivante :
 
 ```
-python srv.py
+python examples/server.py
 ```
 
 ### Exécution de commandes depuis le client
